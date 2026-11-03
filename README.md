@@ -45,6 +45,12 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000.
 
+Live on vercel 
+
+```
+https://github.com/CyberBros435/mudasir-zia-oct-2026-portfolio
+```
+
 ## Deploy
 
 Hosted on Vercel from this repo. Every commit to the main branch redeploys automatically.

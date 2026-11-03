@@ -1,0 +1,107 @@
+/* ===== Responsive + touch layer (loads after styles.css) ===== */
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{overflow-x:hidden;overflow-x:clip}
+img{max-width:100%}
+.wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+@media(min-width:600px){.wrap{padding-left:24px;padding-right:24px}}
+.hero>*{min-width:0}
+html:has(dialog[open]){overflow:hidden}
+
+/* ---- navigation ---- */
+nav{flex-wrap:nowrap;gap:14px;padding:10px 0}
+nav .lg{margin-right:auto;white-space:nowrap}
+.nl{display:flex;align-items:center;gap:18px}
+.nl a{white-space:nowrap;font-size:15px}
+.nr{display:flex;align-items:center;gap:8px}
+.burger{display:none;width:44px;height:44px;border:1.5px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0}
+.burger span{display:block;width:20px;height:2px;border-radius:2px;background:var(--ink);transition:transform .25s,opacity .2s}
+nav.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+nav.open .burger span:nth-child(2){opacity:0}
+nav.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+a.tg,a.dl,a.mini{display:inline-block;text-decoration:none;line-height:1.4}
+.tg{white-space:nowrap}
+@media(max-width:1100px){
+ .burger{display:inline-flex}
+ .nl{position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;padding:6px 18px 18px;background:var(--panel);border:1px solid var(--line);border-radius:0 0 16px 16px;box-shadow:0 28px 40px -22px rgba(0,0,0,.55);max-height:calc(100dvh - 76px);overflow:auto;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s,transform .2s,visibility .2s}
+ nav.open .nl{opacity:1;visibility:visible;transform:none}
+ .nl a{padding:15px 4px;font-size:17px;border-bottom:1px solid var(--line)}
+ .nl a.on{text-underline-offset:5px}
+ .nl a.dl{margin-top:14px;text-align:center;border:0;padding:14px;border-radius:999px;font-weight:600}
+}
+
+/* ---- hero / typography ---- */
+h1{font-size:clamp(40px,11vw,84px)}
+.btns .btn{text-align:center}
+@media(max-width:600px){
+ .hero{padding:20px 0 40px;gap:26px}
+ .role{font-size:19px;min-height:4em}
+ .btns .btn{flex:1 1 140px}
+ section{padding:44px 0}
+ section.cta{padding:22px;margin:44px 0}
+ .log{font-size:12.5px;padding:16px}
+ .f1,.f3{left:0}.f2,.f4{right:0}
+ .cs{padding:16px}
+}
+.proj,.cvs,.lv{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.ach,.edu,.cols{grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr))}
+@media(max-width:820px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .stats div{border-right:0;border-bottom:1px solid var(--line);padding:18px}
+ .stats div:nth-child(odd){border-right:1px solid var(--line)}
+ .stats div:nth-last-child(-n+2){border-bottom:0}
+ .stats strong{font-size:28px}
+}
+@media(max-width:520px){footer .g{grid-template-columns:1fr}.cvc{grid-template-columns:1fr}.cvc .cvp{max-width:300px;margin:0 auto}}
+
+/* ---- touch comfort ---- */
+@media(pointer:coarse){.mini,.tg,.f,.ts{min-height:44px;display:inline-flex;align-items:center;justify-content:center}a.mini,a.tg{display:inline-flex}.cn{width:48px;height:48px}}
+@media(hover:none){.fan .fc span{opacity:1}}
+
+/* ---- resume previews ---- */
+.cvp{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;color:inherit}
+.cvp img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+.zi{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.72);color:#fff;font:600 12px var(--font);padding:5px 10px;border-radius:999px;pointer-events:none}
+
+/* ---- auto-scrolling certificate rows ---- */
+.mq2{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain}
+.mq2::-webkit-scrollbar{display:none}
+.mq2 .mt{animation:none!important;transform:none!important}
+.mq2:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
+.mc{-webkit-tap-highlight-color:transparent}
+.mc.sel{outline:3px solid var(--pri);transform:translateY(-6px) scale(1.05)}
+@media(max-width:820px){
+ .cw{display:flex;flex-direction:column}
+ .cw .mq2{order:1}.cw .spot{order:2;margin:14px 0 0}
+ .spt .row .mini{flex:1 1 auto;text-align:center}
+}
+
+/* ---- pause switch ---- */
+#mo{position:fixed;left:max(16px,env(safe-area-inset-left));bottom:calc(20px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);font-size:13px;cursor:pointer;z-index:25;opacity:.9;padding:0;display:grid;place-items:center}
+#mo:hover{border-color:var(--sig)}
+html.nomo .mt,html.nomo .ph,html.nomo .fl,html.nomo .ring,html.nomo .st i,html.nomo .cur::after,html.nomo .rg.cur .p{animation-play-state:paused}
+
+/* ---- document viewer with zoom ---- */
+dialog#pv{width:min(1120px,96vw);height:min(94vh,94dvh);max-width:none;max-height:none;padding:0;overflow:hidden}
+dialog#pv[open]{display:flex;flex-direction:column}
+#pvt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pvs{flex:1 1 auto;min-height:0;position:relative;overflow:hidden;display:block;padding:0;touch-action:none;cursor:zoom-in;user-select:none;-webkit-user-select:none;background:var(--bg)}
+#pvs.zm{cursor:grab}
+#pvz{position:absolute;inset:0;display:grid;place-items:center;transform-origin:50% 50%;will-change:transform;perspective:1200px}
+#pvi{display:block;max-width:none;max-height:none;border-radius:4px;background:#fff;box-shadow:0 24px 50px -26px rgba(0,0,0,.65);pointer-events:none;-webkit-user-drag:none;user-select:none;image-rendering:auto}
+.pvb{gap:12px;padding:10px 14px}
+.pvm{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pvzc{display:flex;align-items:center;gap:8px}
+.pvzc b{min-width:50px;text-align:center;font-size:14px}
+.cn.sm{width:38px;height:38px;font-size:19px;line-height:1;padding:0}
+.pvm span{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.pvh{color:var(--mute);font-size:12px;text-align:center}
+@media(max-width:700px){
+ dialog#pv{width:100vw;height:100dvh;border-radius:0}
+ .pvb{padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+ .pvh{display:none}
+ .dh{padding:10px 14px}
+}
+
+/* degree fan: wider spacing on phones (tap opens the viewer) */
+@media(max-width:700px){.fan .fc,.fan:hover .fc{--s:min(125px,31vw)}}

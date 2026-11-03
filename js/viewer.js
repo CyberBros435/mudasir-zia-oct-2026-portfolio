@@ -1,0 +1,56 @@
+(()=>{const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],rm=false,X=window.X,ALL=[...X.a,...X.b,...X.c,...X.dg];
+['contextmenu','dragstart','copy'].forEach(t=>addEventListener(t,e=>{if(e.target.closest&&e.target.closest('.vault,.fan,#pv,.ip,.im'))e.preventDefault()}));
+const pic=it=>{const d=document.createElement('div');d.className='im';d.style.backgroundImage='url("'+it.s+'")';return d};
+const pv=$('#pv'),pi=$('#pvi'),stg=$('#pvs'),pz=$('#pvz');let ix=0,LIST=ALL,sc=1,tx=0,ty=0;
+const MAXZ=6,fit=()=>{const c=LIST[ix];if(!c)return;const W=stg.clientWidth-16,H=stg.clientHeight-16,r=c.r||.75,w=Math.max(40,Math.min(W,H*r));pi.style.width=w+'px';pi.style.height=(w/r)+'px'};
+const clampP=()=>{const mx=Math.max(0,(pi.offsetWidth*sc-stg.clientWidth)/2+8),my=Math.max(0,(pi.offsetHeight*sc-stg.clientHeight)/2+8);tx=Math.min(mx,Math.max(-mx,tx));ty=Math.min(my,Math.max(-my,ty))};
+const paint=sm=>{clampP();pz.style.transition=sm?'transform .18s ease-out':'none';pz.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')';$('#pvzl').textContent=Math.round(sc*100)+'%';stg.classList.toggle('zm',sc>1.02)};
+const zoomTo=(s,fx,fy,sm)=>{s=Math.min(MAXZ,Math.max(1,s));const k=s/sc;tx=fx-(fx-tx)*k;ty=fy-(fy-ty)*k;sc=s;if(sc<=1.001){sc=1;tx=0;ty=0}paint(sm)};
+const ctr=e=>{const r=stg.getBoundingClientRect();return[e.clientX-r.left-r.width/2,e.clientY-r.top-r.height/2]};
+const zReset=sm=>{sc=1;tx=0;ty=0;paint(sm)};
+const draw=()=>{const c=LIST[ix];fit();pi.src=c.s;pi.alt=c.t;$('#pvt').textContent=c.t;$('#pvc2').textContent=LIST.length>1?(ix+1)+' / '+LIST.length:'';const a=$('#pvr');if(c.u){a.href='https://github.com/CyberBros435/'+c.u;a.hidden=false}else a.hidden=true;const dl=$('#pvd');if(c.d){dl.href=c.d;dl.download=c.n||'';dl.hidden=false}else dl.hidden=true;$('#pvp').hidden=$('#pvn').hidden=LIST.length<2;zReset();pi.classList.remove('pop');void pi.offsetWidth;pi.classList.add('pop')};
+const openL=(l,i)=>{LIST=l;ix=i;if(!pv.open)pv.showModal();draw()};
+const open=i=>openL(ALL,i);window.PV={open:openL};
+const go=d=>{ix=(ix+d+LIST.length)%LIST.length;draw()};
+$('#pvn').onclick=()=>go(1);$('#pvp').onclick=()=>go(-1);$('#pvc').onclick=()=>pv.close();
+$('#pvzi').onclick=()=>zoomTo(sc*1.5,0,0,true);$('#pvzo').onclick=()=>zoomTo(sc/1.5,0,0,true);$('#pvzr').onclick=()=>zReset(true);
+pv.addEventListener('click',e=>{if(e.target===pv)pv.close()});
+addEventListener('resize',()=>{if(pv.open){fit();paint()}});
+addEventListener('keydown',e=>{if(!pv.open)return;if(e.key==='+'||e.key==='=')zoomTo(sc*1.4,0,0,true);else if(e.key==='-')zoomTo(sc/1.4,0,0,true);else if(e.key==='0')zReset(true);else if(e.key==='ArrowRight'){if(sc>1.02){tx-=60;paint(true)}else go(1)}else if(e.key==='ArrowLeft'){if(sc>1.02){tx+=60;paint(true)}else go(-1)}else if(e.key==='ArrowUp'&&sc>1.02){ty+=60;paint(true)}else if(e.key==='ArrowDown'&&sc>1.02){ty-=60;paint(true)}});
+const P=new Map();let d0=0,lastTap=0,sx=0,sy=0,moved=0;
+stg.addEventListener('wheel',e=>{e.preventDefault();const[f,g]=ctr(e);zoomTo(sc*(e.deltaY<0?1.18:1/1.18),f,g)},{passive:false});
+stg.addEventListener('pointerdown',e=>{if(e.target.closest('button,a'))return;stg.setPointerCapture(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);sx=e.clientX;sy=e.clientY;moved=0;if(P.size===2){const[p,q]=[...P.values()];d0=Math.hypot(p[0]-q[0],p[1]-q[1])}});
+stg.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const o=P.get(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);moved=Math.max(moved,Math.hypot(e.clientX-sx,e.clientY-sy));
+ if(P.size===2){const[p,q]=[...P.values()],dd=Math.hypot(p[0]-q[0],p[1]-q[1]),r=stg.getBoundingClientRect(),f=(p[0]+q[0])/2-r.left-r.width/2,g=(p[1]+q[1])/2-r.top-r.height/2;if(d0>0)zoomTo(sc*dd/d0,f,g);d0=dd}
+ else if(sc>1.001){tx+=e.clientX-o[0];ty+=e.clientY-o[1];paint()}});
+const up=e=>{if(!P.has(e.pointerId))return;const was=P.size;P.delete(e.pointerId);if(was!==1)return;const dx=e.clientX-sx,dy=e.clientY-sy;
+ if(moved<10){const t=Date.now();if(t-lastTap<320){const[f,g]=ctr(e);zoomTo(sc>1.05?1:2.6,f,g,true);lastTap=0}else lastTap=t}
+ else if(sc<=1.02&&Math.abs(dx)>60&&Math.abs(dy)<70&&LIST.length>1)go(dx<0?1:-1)};
+stg.addEventListener('pointerup',up);stg.addEventListener('pointercancel',e=>{P.delete(e.pointerId)});
+const tilt=el=>{if(rm)return;el.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform='perspective(800px) rotateY('+x*12+'deg) rotateX('+(-y*12)+'deg) translateZ(6px)';el.style.setProperty('--mx',(x+.5)*100+'%');el.style.setProperty('--my',(y+.5)*100+'%')});el.addEventListener('pointerleave',()=>el.style.transform='')};
+$$('.cvc').forEach(tilt);
+const base=[0,X.a.length,X.a.length+X.b.length];
+const kind=t=>/recommendation/i.test(t)?'Letter of recommendation':/Offer letter/i.test(t)?'Offer letter':/Experience letter/i.test(t)?'Experience letter':'Certificate';
+const org=c=>c.o||(c.t.includes(': ')?c.t.split(': ')[0]:c.t.replace(/^[^,]*, /,''));
+const spf=$('#spf'),NS=X.a.length+X.b.length+X.c.length;let si=0,hv=false;
+const setS=i=>{si=i;const c=ALL[i];$('#spi').style.backgroundImage='url("'+c.s+'")';spf.style.setProperty('--r',c.r);$('#spk').textContent=kind(c.t);$('#spn').textContent=c.t;$('#spo').textContent=org(c);$('#spc').textContent=(i+1)+' of '+NS+' documents';const a=$('#spr');if(c.u){a.href='https://github.com/CyberBros435/'+c.u;a.hidden=false}else a.hidden=true;spf.classList.remove('sw');void spf.offsetWidth;spf.classList.add('sw')};
+spf.onclick=$('#spv').onclick=()=>open(si);tilt(spf);setS(0);
+const touch=matchMedia('(hover:none)').matches,spot=$('#spot');
+const lazy=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const d=e.target;d.style.backgroundImage='url("'+d.dataset.bg+'")';lazy.unobserve(d)}}),{rootMargin:'0px 400px 0px 400px'}):null;
+const lpic=it=>{const d=document.createElement('div');d.className='im';if(lazy){d.dataset.bg=it.s;lazy.observe(d)}else d.style.backgroundImage='url("'+it.s+'")';return d};
+const rowOf=(el,idx,dir)=>{const its=idx.map(i=>({i,c:ALL[i]}));[...its,...its].forEach(({i,c})=>{const b=document.createElement('button');b.type='button';b.className='mc';b.style.cssText='height:112px;width:'+112*Math.min(Math.max(c.r,.62),1.45)+'px';b.setAttribute('aria-label',c.t);b.appendChild(lpic(c));if(!touch)b.onmouseenter=b.onfocus=()=>setS(i);b.onclick=()=>{if(touch&&si!==i){setS(i);const r=spot.getBoundingClientRect();if(r.top>innerHeight*.6||r.bottom<80)spot.scrollIntoView({block:'center',behavior:'smooth'});b.classList.add('sel');setTimeout(()=>b.classList.remove('sel'),1200)}else open(i)};el.appendChild(b)});window.autoScroll&&autoScroll(el.parentElement,dir,Math.max(its.length*4,30))};
+const rg=(a,b)=>Array.from({length:b-a},(_,k)=>a+k);rowOf($('#mr1'),[...rg(0,base[1]),...rg(base[2],NS)],1);rowOf($('#mr2'),rg(base[1],base[2]),-1);
+const cw=$('#cw');cw.addEventListener('mouseenter',()=>hv=true);cw.addEventListener('mouseleave',()=>hv=false);
+cw.addEventListener('touchstart',()=>{hv=true},{passive:true});cw.addEventListener('touchend',()=>setTimeout(()=>{hv=false},6000),{passive:true});
+setInterval(()=>{if(!hv&&!(window.MO&&MO.paused)&&!pv.open&&!document.hidden)setS((si+1)%NS)},4200);
+
+const fan=$('#fan'),bd=base[2]+X.c.length;X.dg.forEach((it,i)=>{const b=document.createElement('button');b.type='button';b.className='fc';b.style.setProperty('--o',i-(X.dg.length-1)/2);b.style.setProperty('--r',Math.min(Math.max(it.r,.68),1));b.setAttribute('aria-label',it.t);const p=pic(it);if(it.r>1.2)p.style.backgroundPosition='center';b.appendChild(p);const s=document.createElement('span');s.textContent=it.t.split(',')[0];b.appendChild(s);b.onclick=()=>open(bd+i);fan.appendChild(b)});
+const ip=$('#ip');X.nw.forEach(n=>{const d=ALL.findIndex(x=>x.o===n.n&&/^Offer/.test(x.t)),a=document.createElement('article');a.className='card ipc';const l=document.createElement('div');l.className='lg2';if(n.l)l.appendChild(pic({s:n.l}));else l.textContent=n.n;a.appendChild(l);const h=document.createElement('h3');h.textContent=n.n;const p=document.createElement('p');p.textContent='Offer letter received. In progress.';a.append(h,p);const r=document.createElement('div');r.className='row';if(d>=0){const b=document.createElement('button');b.type='button';b.className='mini s';b.textContent='View offer letter';b.onclick=()=>open(d);r.appendChild(b);const u=ALL[d].u;if(u){const g=document.createElement('a');g.className='mini';g.target='_blank';g.rel='noopener';g.href='https://github.com/CyberBros435/'+u;g.textContent='Repository';r.appendChild(g)}}a.appendChild(r);if(d>=0)tilt(a);ip.appendChild(a)});
+if(!('IntersectionObserver' in window)){}
+const cs=[],dc=m=>(m.split('.')[1]||'').length,fmt=(o,k)=>o.replace(/\d+(\.\d+)?/g,m=>(parseFloat(m)*k).toFixed(dc(m)));
+$$('.stats strong,#achv .card b').forEach(el=>{const o=el.textContent;cs.push({el,raf:0,set:k=>el.textContent=fmt(o,k)})});
+$$('.rg[data-p]').forEach(r=>{const b=r.querySelector('b'),o=b.textContent,p=r.dataset.p,c=r.querySelector('.p');c.style.transition='none';cs.push({el:r,raf:0,set:k=>{b.textContent=fmt(o,k);c.style.strokeDashoffset=276.5*(1-p*k/100)}})});
+$$('.sb').forEach(el=>{const v=+el.dataset.v,b=el.querySelector('b'),i=el.querySelector('i');i.style.transition='none';cs.push({el,raf:0,set:k=>{b.textContent=Math.round(v*k);i.style.width=v*k+'%'}})});
+const cio=new IntersectionObserver(es=>es.forEach(e=>{const t=cs.find(x=>x.el===e.target);cancelAnimationFrame(t.raf);if(!e.isIntersecting){t.set(0);return}if(rm){t.set(1);return}const t0=performance.now(),f=n=>{const p=Math.min((n-t0)/1700,1);t.set(1-Math.pow(1-p,3));if(p<1)t.raf=requestAnimationFrame(f)};t.raf=requestAnimationFrame(f)}),{threshold:.5});
+cs.forEach(t=>{t.set(0);cio.observe(t.el)});
+})();
